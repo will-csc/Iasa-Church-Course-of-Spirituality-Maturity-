@@ -63,17 +63,6 @@ No console e na tela de login aparece o **link externo** para compartilhar com o
 
 O sistema cria contas iniciais (senha = `Nome` + `123`), por exemplo:
 
-| Nome    | Senha       |
-|---------|-------------|
-| William | William123  |
-| Stela   | Stela123    |
-| Peter   | Peter123    |
-| Saraiva | Saraiva123  |
-| Bruna   | Bruna123    |
-| Felipe  | Felipe123   |
-| Carol   | Carol123    |
-| Paulo   | Paulo123    |
-
 Nomes e senhas **não diferenciam maiúsculas/minúsculas**.
 
 O Apóstolo também pode criar/remover contas pelo painel da sala.
