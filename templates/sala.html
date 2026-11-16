@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Sala — Curso de Maturidade Espiritual</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body class="sala-page"
+  data-role="{{ role }}"
+  data-jitsi="{{ jitsi_room }}"
+  data-pdf-url="{{ room_state.pdf_url or '' }}"
+  data-page="{{ room_state.current_page }}"
+  data-locked="{{ '1' if room_state.room_locked else '0' }}"
+  data-lan-url="{{ lan_url }}"
+  data-local-url="{{ local_url }}">
+
+  <header class="topbar">
+    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" />
+    <div class="title-wrap">
+      <div class="title">Curso de Maturidade Espiritual</div>
+      <div class="topbar-meta">
+        <span id="lock-badge" class="badge {% if room_state.room_locked %}locked{% else %}open{% endif %}">
+          {% if room_state.room_locked %}Bloqueada{% else %}Aberta{% endif %}
+        </span>
+        {% if role == 'master' %}
+          <span class="badge">Apóstolo</span>
+        {% else %}
+          <span class="badge">{{ display_name }}</span>
+        {% endif %}
+      </div>
+    </div>
+    <a class="logout" href="{{ url_for('logout') }}">Sair</a>
+  </header>
+
+  {% if role == 'master' %}
+  <section class="master-panel">
+    <div class="group">
+      <label class="btn secondary" for="pdf-input">Enviar PDF</label>
+      <input id="pdf-input" type="file" accept="application/pdf,.pdf" hidden />
+      <button type="button" id="btn-lock">Bloquear</button>
+      <button type="button" id="btn-unlock" class="secondary">Desbloquear</button>
+      <button type="button" id="btn-clear" class="secondary">PDF padrão</button>
+    </div>
+    <div class="link-box">
+      <span class="hint">Link externo:</span>
+      <input id="share-link" type="text" readonly value="{{ share_link }}" />
+      <button type="button" id="btn-copy" class="secondary">Copiar</button>
+    </div>
+  </section>
+
+  <section class="users-panel">
+    <div class="users-create">
+      <strong>Criar login de fiel</strong>
+      <input id="new-user-name" type="text" placeholder="Nome (único)" autocomplete="off" />
+      <input id="new-user-pass" type="text" placeholder="Senha" autocomplete="off" />
+      <button type="button" id="btn-create-user">Criar</button>
+      <span id="user-msg" class="hint"></span>
+    </div>
+    <div class="users-list-wrap">
+      <strong>Contas</strong>
+      <ul id="users-list" class="users-list">
+        {% for u in users %}
+          <li data-name="{{ u }}">
+            <span>{{ u }}</span>
+            <button type="button" class="secondary btn-del-user" data-name="{{ u }}">Remover</button>
+          </li>
+        {% else %}
+          <li class="empty">Nenhuma conta ainda.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+  {% endif %}
+
+  <nav class="mobile-tabs" aria-label="Seções da sala">
+    <button type="button" class="tab-btn active" data-tab="pdf">Material</button>
+    <button type="button" class="tab-btn" data-tab="call">Chamada</button>
+  </nav>
+
+  <main class="main-split">
+    <section class="panel panel-pdf is-active" data-panel="pdf">
+      <div class="viewer-toolbar">
+        <div class="page-controls">
+          <button type="button" id="btn-prev" class="secondary">Anterior</button>
+          <input id="page-input" type="number" min="1" value="{{ room_state.current_page }}" inputmode="numeric" />
+          <button type="button" id="btn-next" class="secondary">Próxima</button>
+          <button type="button" id="btn-goto" class="secondary">Ir</button>
+        </div>
+        <div class="leader-hint-wrap">
+          <span id="leader-hint" class="leader-hint">Apóstolo na pág. {{ room_state.current_page }}</span>
+          {% if role != 'master' %}
+          <button type="button" id="btn-follow-leader" class="secondary">Ir para lá</button>
+          {% endif %}
+        </div>
+        {% if role == 'master' %}
+        <div class="brush-controls">
+          <button type="button" id="btn-brush" class="secondary">Pincel</button>
+          <button type="button" id="btn-clear-hl" class="secondary">Limpar grifo</button>
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="pdf-stage">
+        <div id="pdf-stack" class="pdf-stack hidden">
+          <canvas id="pdf-canvas"></canvas>
+          <canvas id="hl-canvas"></canvas>
+        </div>
+        <p id="pdf-empty" class="pdf-empty {% if room_state.pdf_url %}hidden{% endif %}">
+          {% if role == 'master' %}
+            O PDF padrão do curso deve carregar automaticamente. Você também pode enviar outro arquivo.
+          {% else %}
+            Aguardando o material do curso…
+          {% endif %}
+        </p>
+      </div>
+    </section>
+
+    <section class="panel panel-call" data-panel="call">
+      <div class="panel-header">Chamada</div>
+      <div class="jitsi-wrap" id="jitsi-container"></div>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', filename='js/sala.js') }}"></script>
+</body>
+</html>

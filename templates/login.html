@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Entrar — Curso de Maturidade Espiritual</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="login-page">
+  <div class="login-box">
+    <img class="login-logo" src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo da igreja" />
+    <h1>Curso de Maturidade Espiritual</h1>
+
+    <div class="public-link-box">
+      <label for="public-link">Link de acesso</label>
+      <div class="public-link-row">
+        <input id="public-link" type="text" readonly value="{{ share_link }}" />
+        <button type="button" id="btn-copy-link" class="secondary">Copiar</button>
+      </div>
+      {% if public_url %}
+        <p class="link-status ok">Link externo ativo — envie este link aos participantes</p>
+      {% elif tunnel_error %}
+        <p class="link-status err">{{ tunnel_error }}</p>
+      {% else %}
+        <p class="link-status err">Link externo ainda não disponível</p>
+      {% endif %}
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {% if category == 'ok' %}ok{% endif %}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form id="form-member" class="login-form {% if show_master %}hidden{% endif %}" method="post" action="{{ url_for('login') }}">
+      <input type="hidden" name="mode" value="member" />
+      <div class="field">
+        <label for="member-user">Nome</label>
+        <input id="member-user" type="text" name="username" required autofocus autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="member-password">Senha</label>
+        <input id="member-password" type="password" name="password" required autocomplete="current-password" />
+      </div>
+      <button type="submit">Entrar</button>
+    </form>
+
+    <form id="form-master" class="login-form {% if not show_master %}hidden{% endif %}" method="post" action="{{ url_for('login') }}">
+      <input type="hidden" name="mode" value="master" />
+      <div class="field">
+        <label for="master-user">Usuário do Apóstolo</label>
+        <input id="master-user" type="text" name="username" required autocomplete="username" />
+      </div>
+      <div class="field">
+        <label for="master-password">Senha do Apóstolo</label>
+        <input id="master-password" type="password" name="password" required autocomplete="current-password" />
+      </div>
+      <button type="submit">Entrar como Apóstolo</button>
+    </form>
+
+    <p class="login-switch">
+      <span id="switch-to-master-wrap" class="{% if show_master %}hidden{% endif %}">
+        <button type="button" class="linkish" id="show-master">Login Apostolo</button>
+      </span>
+      <span id="switch-to-member-wrap" class="{% if not show_master %}hidden{% endif %}">
+        <button type="button" class="linkish" id="show-member">Voltar ao login</button>
+      </span>
+    </p>
+  </div>
+
+  <script>
+    const formMember = document.getElementById("form-member");
+    const formMaster = document.getElementById("form-master");
+    const toMaster = document.getElementById("show-master");
+    const toMember = document.getElementById("show-member");
+    const wrapMaster = document.getElementById("switch-to-master-wrap");
+    const wrapMember = document.getElementById("switch-to-member-wrap");
+    const publicLink = document.getElementById("public-link");
+    const btnCopy = document.getElementById("btn-copy-link");
+
+    toMaster.addEventListener("click", () => {
+      formMember.classList.add("hidden");
+      formMaster.classList.remove("hidden");
+      wrapMaster.classList.add("hidden");
+      wrapMember.classList.remove("hidden");
+    });
+
+    toMember.addEventListener("click", () => {
+      formMaster.classList.add("hidden");
+      formMember.classList.remove("hidden");
+      wrapMember.classList.add("hidden");
+      wrapMaster.classList.remove("hidden");
+    });
+
+    btnCopy.addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(publicLink.value);
+        btnCopy.textContent = "Copiado!";
+        setTimeout(() => { btnCopy.textContent = "Copiar"; }, 1500);
+      } catch {
+        publicLink.select();
+        document.execCommand("copy");
+      }
+    });
+  </script>
+</body>
+</html>

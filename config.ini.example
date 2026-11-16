@@ -1,0 +1,15 @@
+[app]
+SECRET_KEY = mude-esta-chave-secreta
+PORT = 8080
+HOST = 0.0.0.0
+
+[auth]
+MASTER_USER = Apostolo
+MASTER_PASSWORD = troque-esta-senha
+
+[jitsi]
+ROOM_NAME = iasa-espiritual-reuniao
+
+[ngrok]
+; Cole aqui o token de https://dashboard.ngrok.com/get-started/your-authtoken
+AUTHTOKEN =
