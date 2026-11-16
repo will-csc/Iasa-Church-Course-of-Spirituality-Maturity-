@@ -5,8 +5,6 @@ venv/
 env/
 uploads/*.pdf
 !uploads/.gitkeep
-data/users.json
-config.ini
 tools/
 *.exe
 !Iniciar-Curso.exe
