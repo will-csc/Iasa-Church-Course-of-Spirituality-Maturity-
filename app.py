@@ -7,6 +7,9 @@ import configparser
 import secrets
 import socket
 import sys
+import threading
+import time
+import webbrowser
 from functools import wraps
 from pathlib import Path
 
@@ -422,15 +425,31 @@ def print_startup_banner(port: int) -> None:
         print(f"  Provedor:          {tunnel_info.provider or '-'}")
         print()
         print("  Compartilhe o link externo com os fiéis.")
+        print("  Abrindo o navegador no link externo...")
     else:
         print(f"  Link externo:      (indisponível)")
         if tunnel_info.error:
             print(f"  Motivo: {tunnel_info.error}")
+        print("  Abrindo o navegador no link local...")
     print()
     print("  Não desligue este PC enquanto o curso estiver ativo.")
     print("  Login Apóstolo: MASTER_USER / MASTER_PASSWORD no config.ini")
     print(line)
     print()
+
+
+def open_browser_when_ready(url: str, delay: float = 1.8) -> None:
+    """Abre o navegador depois que o servidor local já está escutando."""
+
+    def _open() -> None:
+        time.sleep(delay)
+        try:
+            print(f"[browser] Abrindo: {url}")
+            webbrowser.open(url)
+        except Exception as exc:  # noqa: BLE001
+            print(f"[browser] Não foi possível abrir o navegador: {exc}")
+
+    threading.Thread(target=_open, daemon=True).start()
 
 
 def main() -> None:
@@ -454,7 +473,10 @@ def main() -> None:
     atexit.register(stop_tunnel)
 
     print_startup_banner(port)
-    # provider no banner usa o estado global já atualizado por start_tunnel
+
+    browser_url = get_public_url() or f"http://127.0.0.1:{port}/login"
+    open_browser_when_ready(browser_url)
+
     socketio.run(
         app,
         host=host,
