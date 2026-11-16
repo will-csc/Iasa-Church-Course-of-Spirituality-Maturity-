@@ -12,7 +12,9 @@ import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent
+from paths_util import base_dir
+
+BASE_DIR = base_dir()
 TOOLS_DIR = BASE_DIR / "tools"
 CLOUDFLARED_EXE = TOOLS_DIR / "cloudflared.exe"
 

@@ -24,14 +24,16 @@ from flask import (
 from flask_socketio import SocketIO, emit
 from werkzeug.utils import secure_filename
 
+from paths_util import base_dir, bundle_dir, static_dir, templates_dir
 from room_state import room
 from tunnel import get_public_url, start_tunnel, stop_tunnel, tunnel_info
 from users import UserStore
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = base_dir()
 UPLOAD_DIR = BASE_DIR / "uploads"
 DATA_DIR = BASE_DIR / "data"
 UPLOAD_DIR.mkdir(exist_ok=True)
+DATA_DIR.mkdir(exist_ok=True)
 USERS_FILE = DATA_DIR / "users.json"
 DEFAULT_PDF_FILE = DATA_DIR / "784656217-CURSO-DE-MATURIDADE-NO-ESPIRITO-1.pdf"
 DEFAULT_PDF_URL = "/material/curso.pdf"
@@ -54,6 +56,10 @@ def load_config() -> configparser.ConfigParser:
     cfg = configparser.ConfigParser()
     config_path = BASE_DIR / "config.ini"
     example_path = BASE_DIR / "config.ini.example"
+    if not example_path.exists():
+        bundled = bundle_dir() / "config.ini.example"
+        if bundled.exists():
+            example_path.write_text(bundled.read_text(encoding="utf-8"), encoding="utf-8")
     if not config_path.exists() and example_path.exists():
         config_path.write_text(example_path.read_text(encoding="utf-8"), encoding="utf-8")
     cfg.read(config_path, encoding="utf-8")
@@ -71,7 +77,11 @@ for _name in DEFAULT_MEMBERS:
 if DEFAULT_PDF_FILE.exists():
     room.configure_default_pdf(DEFAULT_PDF_FILE.name, DEFAULT_PDF_URL)
 
-app = Flask(__name__)
+app = Flask(
+    __name__,
+    template_folder=str(templates_dir()),
+    static_folder=str(static_dir()),
+)
 app.secret_key = config.get("app", "SECRET_KEY", fallback=secrets.token_hex(16))
 app.config["MAX_CONTENT_LENGTH"] = 80 * 1024 * 1024  # 80 MB
 

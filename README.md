@@ -19,49 +19,51 @@ Aplicação local para encontros online da igreja: login dos fiéis, sala com PD
 - Conta ngrok (opcional, mas recomendada) — [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
 - Ngrok instalado no sistema (ex.: `winget install Ngrok.Ngrok`) e atualizado (`ngrok update`)
 
-## Instalação em outro computador (após `git clone`)
-
-1. Instale **Python 3.10+** em https://www.python.org/downloads/  
-   - Marque **“Add python.exe to PATH”**
-2. (Opcional) Instale o ngrok: `winget install Ngrok.Ngrok` e depois `ngrok update`
-3. Clone e entre na pasta:
+## Uso rápido (recomendado)
 
 ```bash
 git clone https://github.com/will-csc/Iasa-Church-Course-of-Spirituality-Maturity-.git
 cd Iasa-Church-Course-of-Spirituality-Maturity-
 ```
 
-4. Dê duplo clique em **`run.bat`**  
-   - Na primeira vez ele cria o `.venv`, instala as dependências e gera o `config.ini`
-5. Edite o `config.ini` (senha do Apóstolo e, se quiser, `AUTHTOKEN` do ngrok)
-6. Rode o `run.bat` de novo
+Depois dê **duplo clique** em:
 
-> Não existe um `.exe` pronto no repositório. O “executável” de uso diário é o **`run.bat`** (precisa de Python instalado).
+- **`Iniciar-Curso.exe`** — não precisa ter Python instalado  
+- ou **`Iniciar.bat`** — tenta o `.exe`; se não houver, usa o Python (`run.bat`)
 
-### Se o `run.bat` falhar
+Na primeira execução o app cria o `config.ini`. Edite senha/token se quiser e abra o `.exe` de novo.
 
-- Mensagem **Python nao encontrado** → reinstale o Python com PATH marcado, feche e abra o Explorer de novo
-- Erro no `pip install` → verifique a internet e rode o `run.bat` outra vez
-- App sobe sem material → confira se o PDF está em `data/784656217-CURSO-DE-MATURIDADE-NO-ESPIRITO-1.pdf`
+No console e na tela de login aparece o **link externo**.  
+**Não feche a janela preta** enquanto a reunião estiver ativa.
 
-## Instalação manual (alternativa)
+### Windows pode avisar sobre o `.exe`
 
-```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-copy config.ini.example config.ini
-python app.py
+É normal em arquivos novos. Em “Mais informações” → **Executar assim mesmo**.
+
+### Ngrok (opcional)
+
+Para link `*.ngrok-free.app`, instale o ngrok no PC (`winget install Ngrok.Ngrok`, depois `ngrok update`) e coloque o `AUTHTOKEN` no `config.ini`.  
+Sem ngrok, o app tenta Cloudflare Tunnel automaticamente.
+
+## Gerar o `.exe` de novo (desenvolvedor)
+
+Se alterar o código Python:
+
+```text
+run.bat          (cria .venv e deps)
+build_exe.bat    (gera Iniciar-Curso.exe)
 ```
+
+## Alternativa com Python (sem .exe)
+
+1. Instale Python 3.10+ com **Add to PATH**
+2. Duplo clique em `run.bat`
 
 Edite o `config.ini`:
 
 - `MASTER_USER` / `MASTER_PASSWORD` — login do Apóstolo  
-- `AUTHTOKEN` — token do ngrok (se quiser link ngrok)  
-- `ROOM_NAME` em `[jitsi]` — nome da sala de chamada  
-
-No console e na tela de login aparece o **link externo** para compartilhar com os fiéis.  
-**Não desligue o PC** enquanto o encontro estiver ativo.
+- `AUTHTOKEN` — token do ngrok (opcional)  
+- `ROOM_NAME` em `[jitsi]` — nome da sala de chamada
 
 ## Logins padrão (após primeira execução)
 

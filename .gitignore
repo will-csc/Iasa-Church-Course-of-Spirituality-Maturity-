@@ -9,7 +9,7 @@ data/users.json
 config.ini
 tools/
 *.exe
+!Iniciar-Curso.exe
 dist/
 build/
-*.spec
 .DS_Store
