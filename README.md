@@ -102,14 +102,3 @@ static/             → CSS, JS, logo
 data/               → PDF do curso (+ users.json local, não versionado)
 config.ini.example  → modelo de configuração
 ```
-
-## Observações
-
-- O arquivo `config.ini` **não** vai para o Git (contém senhas/token). Use sempre o `.example`.
-- `data/users.json` também é local e não versionado.
-- No plano gratuito do ngrok, a URL muda a cada reinício e pode aparecer uma página de aviso na primeira visita.
-- A chamada usa servidores do Jitsi (`meet.jit.si`); o PC só serve a página, o PDF e a sincronização.
-
-## Licença
-
-Uso interno da igreja / curso IASA. Ajuste conforme a necessidade da congregação.
