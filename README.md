@@ -19,42 +19,46 @@ Aplicação local para encontros online da igreja: login dos fiéis, sala com PD
 - Conta ngrok (opcional, mas recomendada) — [authtoken](https://dashboard.ngrok.com/get-started/your-authtoken)
 - Ngrok instalado no sistema (ex.: `winget install Ngrok.Ngrok`) e atualizado (`ngrok update`)
 
-## Instalação rápida
+## Instalação em outro computador (após `git clone`)
+
+1. Instale **Python 3.10+** em https://www.python.org/downloads/  
+   - Marque **“Add python.exe to PATH”**
+2. (Opcional) Instale o ngrok: `winget install Ngrok.Ngrok` e depois `ngrok update`
+3. Clone e entre na pasta:
 
 ```bash
 git clone https://github.com/will-csc/Iasa-Church-Course-of-Spirituality-Maturity-.git
 cd Iasa-Church-Course-of-Spirituality-Maturity-
+```
+
+4. Dê duplo clique em **`run.bat`**  
+   - Na primeira vez ele cria o `.venv`, instala as dependências e gera o `config.ini`
+5. Edite o `config.ini` (senha do Apóstolo e, se quiser, `AUTHTOKEN` do ngrok)
+6. Rode o `run.bat` de novo
+
+> Não existe um `.exe` pronto no repositório. O “executável” de uso diário é o **`run.bat`** (precisa de Python instalado).
+
+### Se o `run.bat` falhar
+
+- Mensagem **Python nao encontrado** → reinstale o Python com PATH marcado, feche e abra o Explorer de novo
+- Erro no `pip install` → verifique a internet e rode o `run.bat` outra vez
+- App sobe sem material → confira se o PDF está em `data/784656217-CURSO-DE-MATURIDADE-NO-ESPIRITO-1.pdf`
+
+## Instalação manual (alternativa)
+
+```bash
 python -m venv .venv
 .venv\Scripts\activate
 pip install -r requirements.txt
 copy config.ini.example config.ini
+python app.py
 ```
 
 Edite o `config.ini`:
 
 - `MASTER_USER` / `MASTER_PASSWORD` — login do Apóstolo  
 - `AUTHTOKEN` — token do ngrok (se quiser link ngrok)  
-- `JITSI_ROOM_NAME` — nome da sala de chamada  
-
-Coloque o PDF do curso em:
-
-`data/784656217-CURSO-DE-MATURIDADE-NO-ESPIRITO-1.pdf`
-
-(ou ajuste o caminho em `app.py` se usar outro arquivo.)
-
-## Como rodar
-
-**Opção 1 — atalho Windows**
-
-```text
-run.bat
-```
-
-**Opção 2 — terminal**
-
-```bash
-.venv\Scripts\python.exe app.py
-```
+- `ROOM_NAME` em `[jitsi]` — nome da sala de chamada  
 
 No console e na tela de login aparece o **link externo** para compartilhar com os fiéis.  
 **Não desligue o PC** enquanto o encontro estiver ativo.
